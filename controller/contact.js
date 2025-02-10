@@ -45,10 +45,12 @@ exports.postAddnewContact = async (req, res, next) => {
             goal: goal,
             status: status,
             phoneNumber: phoneNumber,
+            relationship: relationship,
             dateSaved: dateSaved,
             lastContacted: lastContacted,
             followUp: followUp,
             notes: notes,
+            userId: req.user.id
         });
 
         if (!newContact) {
@@ -82,7 +84,7 @@ exports.getContactData = async (req, res) => {
 
 exports.getAllContactData = async (req, res) => {
     try {
-        let allContactData = await Contact.findAll({ where: { id: req.user.id } });
+        let allContactData = await Contact.findAll({ where: { userId: req.user.id } });
         res.status(200).json({ message: 'success', allContactData: allContactData });
     }
     catch (err) {
@@ -95,7 +97,7 @@ exports.updateContact = async (req, res) => {
     try {
         const userid = req.params.id;
         console.log("updateJob...userid = ", userid);
-        const { firstName, lastName, jobTitle, companyName, email, linkedIn, location, goal, status, phoneNumber, dateSaved, lastContacted, followUp, notes } = req.body;
+        const { firstName, lastName, jobTitle, companyName, email, linkedIn, twitter, location, goal, status, phoneNumber, relationship, dateSaved, lastContacted, followUp, notes } = req.body;
         console.log('firstName = ' + firstName);
         console.log('lastName = ' + lastName);
         console.log('jobTitle = ' + jobTitle);
@@ -107,6 +109,7 @@ exports.updateContact = async (req, res) => {
         console.log('goal = ' + goal);
         console.log('status = ' + status);
         console.log('phoneNumber = ' + phoneNumber);
+        console.log('relationship = ' + relationship);
         console.log('dateSaved = ' + dateSaved);
         console.log('lastContacted = ' + lastContacted);
         console.log('followUp = ' + followUp);
@@ -130,12 +133,13 @@ exports.updateContact = async (req, res) => {
         if (goal) updatedData.goal = goal;
         if (status) updatedData.status = status;
         if (phoneNumber) updatedData.phoneNumber = phoneNumber;
+        if (relationship) updatedData.relationship = relationship;
         if (dateSaved) updatedData.dateSaved = dateSaved;
         if (lastContacted) updatedData.lastContacted = lastContacted;
         if (followUp) updatedData.followUp = followUp;
         if (notes) updatedData.notes = notes;
 
-        await Contact.update(updatedData);
+        await oneContact.update(updatedData);
 
         res.status(200).json({
             message: "Contact updated successfully",
