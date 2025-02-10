@@ -28,7 +28,8 @@ exports.postAddnewCompany = async (req, res, next) => {
             website: website,
             linkedIn: linkedIn,
             yearFounded: yearFounded,
-            notes: notes
+            notes: notes,
+            userId:req.user.id
         });
 
         if (!newCompany) {
@@ -62,7 +63,7 @@ exports.getCompanyData = async (req, res) => {
 
 exports.getAllCompanyData = async (req, res) => {
     try {
-        let allCompanyData = await Company.findAll({ where: { id: req.user.id } });
+        let allCompanyData = await Company.findAll({ where: { userId: req.user.id } });
         res.status(200).json({ message: 'success', allCompanyData: allCompanyData });
     }
     catch (err) {
@@ -101,7 +102,7 @@ exports.updateCompany = async (req, res) => {
         if (yearFounded) updatedData.yearFounded = yearFounded;
         if (notes) updatedData.notes = notes;
 
-        await Company.update(updatedData);
+        await oneCompany.update(updatedData);
 
         res.status(200).json({
             message: "Company updated successfully",

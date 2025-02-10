@@ -12,6 +12,6 @@ router.get('/data', auth.authenticate, companyController.getAllCompanyData);
 //update company record
 router.put('/update/:id', auth.authenticate, companyController.updateCompany);
 //delete the company
-router.put('/delete/:id', auth.authenticate, companyController.deleteCompany);
+router.delete('/delete/:id', auth.authenticate, companyController.deleteCompany);
 
 module.exports = router;
