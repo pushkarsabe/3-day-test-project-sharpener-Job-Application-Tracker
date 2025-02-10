@@ -114,3 +114,22 @@ exports.updateCompany = async (req, res) => {
     }
 }
 
+exports.deleteCompany = async (req, res) => {
+    try {
+        const userid = req.params.id;
+        console.log('deleteCompany userid = ', userid);
+        let companyData = await Company.findOne({ where: { id: userid } });
+
+        if (!companyData) {
+            return res.status(404).json({ message: 'Company not found' });
+        }
+        await Company.update({ isDeleted: true }, { where: { id: userid } });
+
+        res.status(200).json({ message: 'Company marked as deleted' });
+    }
+    catch (err) {
+        console.error('Error delete Company data:', err);
+        res.status(500).json({ message: 'Failed to delete Company data' })
+    }
+}
+

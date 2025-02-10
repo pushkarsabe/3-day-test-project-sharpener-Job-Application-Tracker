@@ -9,10 +9,13 @@ router.post('/signup', userController.postAddSignup);
 
 router.post('/login', userController.postLogin);
 
-router.get('/user-data/:id', auth.authenticate, userController.getUserData);
+router.get('/data/:id', auth.authenticate, userController.getUserData);
 
-router.get('/user-data', auth.authenticate, userController.getAllUerData);
+router.get('/data', auth.authenticate, userController.getAllUerData);
 
-router.put('/user-update', auth.authenticate, userController.updateUser);
+router.put('/update', auth.authenticate, userController.updateUser);
+
+//delete the user which is logged in
+router.delete('/delete', auth.authenticate, userController.deleteUser);
 
 module.exports = router;

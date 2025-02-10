@@ -19,12 +19,12 @@ const Contact = require('./model/contact');
 const Company = require('./model/company');
 
 const userRoute = require('./routes/user');
-const JobTrackerRoute = require('./routes/jobTracker');
+const jobTrackerRoute = require('./routes/jobTracker');
 const contactRoute = require('./routes/contact');
 const companyRoute = require('./routes/company');
 
 app.use('/user', userRoute);
-app.use('/JobTracker', JobTrackerRoute);
+app.use('/jobTracker', jobTrackerRoute);
 app.use('/contact', contactRoute);
 app.use('/company', companyRoute);
 
@@ -34,10 +34,8 @@ User.hasMany(JobTracker, { foreignKey: 'userId' });
 User.hasMany(Contact, { foreignKey: 'userId' });
 //foreign key mapping user to Contact
 User.hasMany(Company, { foreignKey: 'userId' });
-//foreign key mapping user to Contact
-User.hasMany(Resume, { foreignKey: 'userId' });
 
-
+ 
 // this will create tabble
 sequelize
     .sync()

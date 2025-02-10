@@ -23,6 +23,7 @@ const JobTracker = sequelize.define('jobTracker', {
     savedDate: {
         type: Sequelize.STRING,
         allowNull: false,
+        defaultValue: Sequelize.NOW
     },
     deadlineDate: {
         type: Sequelize.STRING,
@@ -82,6 +83,10 @@ const JobTracker = sequelize.define('jobTracker', {
         type: Sequelize.STRING,
         allowNull: true,
     },
+    isDeleted: {
+        type: Sequelize.BOOLEAN,
+        defaultValue: false,
+    }
 
 });
 

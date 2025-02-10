@@ -25,7 +25,7 @@ const sendEmail = async (recipientEmail, subject, message) => {
             },
             to: [
                 {
-                    email: recipientEmail,
+                    email: 'pushkarsabe1@gmail.com',
                 },
             ],
             subject: subject,

@@ -75,7 +75,7 @@ exports.getContactData = async (req, res) => {
         res.status(200).json({ message: 'success', singleContactData: singleContactData });
     }
     catch (err) {
-        console.error('Error fetching job data:', err);
+        console.error('Error fetching Contact data:', err);
         res.status(500).json({ message: 'Failed to get contact data' });
     }
 }
@@ -139,7 +139,7 @@ exports.updateContact = async (req, res) => {
 
         res.status(200).json({
             message: "Contact updated successfully",
-            job: updatedData
+            contact: updatedData
         });
     }
     catch (err) {
@@ -148,3 +148,22 @@ exports.updateContact = async (req, res) => {
     }
 }
 
+
+exports.deleteContact = async (req, res) => {
+    try {
+        const userid = req.params.id;
+        console.log('deleteContact userid = ', userid);
+        let contactData = await Contact.findOne({ where: { id: userid } });
+
+        if (!contactData) {
+            return res.status(404).json({ message: 'Contact not found' });
+        }
+        await Contact.update({ isDeleted: true }, { where: { id: userid } });
+
+        res.status(200).json({ message: 'Contact marked as deleted' });
+    }
+    catch (err) {
+        console.error('Error delete Contact data:', err);
+        res.status(500).json({ message: 'Failed to delete Contact data' })
+    }
+}

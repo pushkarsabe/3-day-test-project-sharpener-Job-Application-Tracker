@@ -113,7 +113,7 @@ exports.updateUser = async (req, res) => {
         console.log('updateUser userid = ', userid);
         const { firstName, lastName, email } = req.body;
         console.log('firstName = ' + firstName);
-        console.log('lastName = ' + lastName);
+        console.log('`lastName` = ' + lastName);
         console.log('email = ' + email);
 
         let user = await Signup.findOne({ where: { id: userid } });
@@ -137,5 +137,37 @@ exports.updateUser = async (req, res) => {
     catch (err) {
         console.error('Error fetching user data:', err);
         res.status(500).json({ message: 'An error occurred while updating user data', error: err })
+    }
+}
+
+exports.deleteUser = async (req, res) => {
+    try {
+        const userid = req.user.id;
+        console.log('deleteUser userid = ', userid);
+        let userData = await Signup.findOne({
+            where: {
+                id: userid
+            }
+        });
+
+        if (!userData) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        const [updatedRows] = await Signup.update(
+            { isDeleleted: true },
+            {
+                where: { id: userid }
+            }
+        );
+        if (updatedRows === 0) {
+            return res.status(400).json({ message: 'Failed to update user' });
+        }
+
+        res.status(200).json({ message: 'User marked as deleted' });
+    }
+    catch (err) {
+        console.error('Error delete user data:', err);
+        res.status(500).json({ message: 'Failed to delete user data' })
     }
 }

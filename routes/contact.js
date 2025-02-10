@@ -4,12 +4,14 @@ const auth = require('../middleware/auth');
 const contactController = require('../controller/contact');
 
 //to post new contact rgistration
-router.post('/add-contact', auth.authenticate, contactController.postAddnewContact);
+router.post('/contact', auth.authenticate, contactController.postAddnewContact);
 //to get a single contact
-router.get('/single-contact-data/:id', auth.authenticate, contactController.getContactData);
+router.get('/data/:id', auth.authenticate, contactController.getContactData);
 //get all contact data for the logged in user
-router.get('/contact-data', auth.authenticate, contactController.getAllContactData);
+router.get('/data', auth.authenticate, contactController.getAllContactData);
 //update contact record
-router.put('/contact-update/:id', auth.authenticate, contactController.updateContact);
+router.put('/update/:id', auth.authenticate, contactController.updateContact);
+//delete the contact
+router.put('/delete/:id', auth.authenticate, contactController.deleteContact);
 
 module.exports = router;

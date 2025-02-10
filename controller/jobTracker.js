@@ -1,96 +1,88 @@
 const JobTracker = require('../model/jobTracker');
 const User = require('../model/user');
-const multer = require('multer');
 const cloudinary = require('../config/cloudinary');
 const sendEmail = require('../config/emailService');
 const schedule = require('node-schedule');
 
-const upload = multer.fields([
-    { name: "resume", maxCount: 1 },
-    { name: "coverLetter", maxCount: 1 }
-]);
-
 exports.postAddnewJob = async (req, res, next) => {
-    upload(req, res, async (err) => {
-        if (err) {
-            return res.status(400).json({ message: "File upload failed", error: err });
-        }
+    try {
+        let resumeUrl = null;
+        let coverLetterUrl = null;
 
-        try {
-            let resumeUrl = null;
-            let coverLetterUrl = null;
-
-            const uploadToCloudinary = (file) => {
-                return new Promise((resolve, reject) => {
-                    cloudinary.uploader.upload_stream(
-                        { resource_type: "auto", folder: "documents" },
-                        (error, result) => {
-                            if (error) reject(error);
-                            else resolve(result.secure_url);
-                        }
-                    ).end(file.buffer);
-                });
-            };
-
-            if (req.files && req.files.resume) {
-                resumeUrl = await uploadToCloudinary(req.files.resume[0]);
-            }
-
-            if (req.files && req.files.coverLetter) {
-                coverLetterUrl = await uploadToCloudinary(req.files.coverLetter[0]);
-            }
-
-            const newJob = await JobTracker.create({
-                jobDescription: req.body.jobDescription,
-                notes: req.body.notes,
-                postedDate: req.body.postedDate,
-                savedDate: req.body.savedDate,
-                deadlineDate: req.body.deadlineDate,
-                appliedDate: req.body.appliedDate,
-                followUpDate: req.body.followUpDate,
-                resumes: resumeUrl,
-                coverLetter: coverLetterUrl,
-                jobPosition: req.body.jobPosition,
-                company: req.body.company,
-                minimumSalary: req.body.minimumSalary,
-                maximumSalary: req.body.maximumSalary,
-                currency: req.body.currency,
-                salaryPayPeriod: req.body.salaryPayPeriod,
-                location: req.body.location,
-                status: req.body.status,
-                excitement: req.body.excitement,
+        const uploadToCloudinary = (file) => {
+            return new Promise((resolve, reject) => {
+                cloudinary.uploader.upload_stream(
+                    { resource_type: "auto", folder: "documents" },
+                    (error, result) => {
+                        if (error) reject(error);
+                        else resolve(result.secure_url);
+                    }
+                ).end(file.buffer);
             });
+        };
 
-            if (!newJob) {
-                return res.status(400).json({ message: "Job not created" });
-            }
-            if (req.body.followUpDate) {
-                const followUpDate = new Date(req.body.followUpDate);
-                let userid = req.user.id;
-                let user = await User.findOne({ where: { id: userid } });
-                if (!user) {
-                    return res.status(404).json({ message: "User not found" });
-                }
-                let userEmail = user.email;
-                console.log("userEmail = ", userEmail);
 
-                if (followUpDate > new Date()) {
-                    schedule.scheduleJob(followUpDate, async () => {
-                        console.log(`Sending follow-up email to ${userEmail}`);
-                        await sendEmail(userEmail, "Follow-up Reminder", "Reminder: It's time to follow up on your job application.", "");
-                    })
-                }
-
-            }
-
-            res.status(201).json({ message: "Job created", newJob });
-
-        } catch (err) {
-            console.error("Post add job error:", err);
-            res.status(500).json({ error: err.message });
+        if (req.files && req.files.resume) {
+            resumeUrl = await uploadToCloudinary(req.files.resume[0]);
         }
-    });
+
+        if (req.files && req.files.coverLetter) {
+            coverLetterUrl = await uploadToCloudinary(req.files.coverLetter[0]);
+        }
+
+        // Create new job entry
+        const newJob = await JobTracker.create({
+            jobDescription: req.body.jobDescription,
+            notes: req.body.notes,
+            postedDate: req.body.postedDate,
+            savedDate: req.body.savedDate,
+            deadlineDate: req.body.deadlineDate,
+            appliedDate: req.body.appliedDate,
+            followUpDate: req.body.followUpDate,
+            resumes: resumeUrl,
+            coverLetter: coverLetterUrl,
+            jobPosition: req.body.jobPosition,
+            company: req.body.company,
+            minimumSalary: req.body.minimumSalary,
+            maximumSalary: req.body.maximumSalary,
+            currency: req.body.currency,
+            salaryPayPeriod: req.body.salaryPayPeriod,
+            location: req.body.location,
+            status: req.body.status,
+            excitement: req.body.excitement,
+            userId: req.user.id
+        });
+
+        if (!newJob) {
+            return res.status(400).json({ message: "Job not created" });
+        }
+
+        if (req.body.followUpDate) {
+            const followUpDate = new Date(req.body.followUpDate);
+            let userid = req.user.id;
+            let user = await User.findOne({ where: { id: userid } });
+            if (!user) {
+                return res.status(404).json({ message: "User not found" });
+            }
+            let userEmail = user.email;
+            console.log("userEmail = ", userEmail);
+
+            if (followUpDate > new Date()) {
+                schedule.scheduleJob(followUpDate, async () => {
+                    console.log(`Sending follow-up email to ${userEmail}`);
+                    await sendEmail(userEmail, "Follow-up Reminder", "Reminder: It's time to follow up on your job application.", "");
+                })
+            }
+        }
+
+        res.status(201).json({ message: "Job created", newJob });
+
+    } catch (err) {
+        console.error("Post add job error:", err);
+        res.status(500).json({ error: err.message });
+    }
 };
+
 
 exports.getJobData = async (req, res) => {
     try {
@@ -110,8 +102,8 @@ exports.getJobData = async (req, res) => {
 
 exports.getAllJobData = async (req, res) => {
     try {
-        let allJobData = await JobTracker.findAll({ where: { id: req.user.id } });
-        res.status(200).json({ message: 'success', allJobData: allJobData });
+        let allJobData = await JobTracker.findAll({ where: { userId: req.user.id } });
+        res.status(200).json({ message: 'success', allJobData: allJobData, isDeleted: false });
     }
     catch (err) {
         console.error('Error fetching all job data:', err);
@@ -181,3 +173,33 @@ exports.updateJob = async (req, res) => {
         res.status(500).json({ message: 'An error occurred while updating job data', error: err })
     }
 }
+exports.deleteJob = async (req, res) => {
+    try {
+        const userId = req.user.id;
+        const jobId = req.params.id;
+        console.log('deleteJob userId =', userId, 'jobId =', jobId);
+
+        let jobData = await JobTracker.findOne({
+            where: { id: jobId, userId: userId, isDeleted: false }
+        });
+
+        if (!jobData) {
+            return res.status(404).json({ message: 'Job not found or already deleted' });
+        }
+
+        const [updatedCount] = await JobTracker.update(
+            { isDeleted: true },
+            { where: { id: jobId, userId: userId } }
+        );
+
+        if (updatedCount === 0) {
+            return res.status(404).json({ message: 'Job not found or update failed' });
+        }
+
+        res.status(200).json({ message: 'Job marked as deleted' });
+    }
+    catch (err) {
+        console.error('Error delete Job data:', err);
+        res.status(500).json({ message: 'Failed to delete Job data' });
+    }
+};
