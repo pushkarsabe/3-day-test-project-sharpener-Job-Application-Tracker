@@ -120,66 +120,6 @@ ________________________________________________________________________________
 ________________________________________________________________________________________________________________________________
 
 
-### * Create new Contact
-
-`POST |  /contact/add`
-
-| Key             | Value             |
-| firstName       | <value>           |
-| lastName        | <value>           |
-| jobTitle        | <value>           |
-| companyName     | <value>           |
-| email           | <value>           |
-| linkedIn        | <value>           |
-| twitter         | <value>           |
-| location        | <value>           |
-| phoneNumber     | <value>           |
-| relationship    | <value>           |
-| goal            | <value>           |
-| status          | <value>           |
-| dateSaved       | <value>           |
-| lastContacted   | <value>           |
-| followUp        | <value>           |
-| notes           | <value>           |
-
-
-### * Get All Contact
-
-`GET |  /contact/data` 
-
-### * Get Single Contact
-
-`GET |  /contact/data/:id` 
-
-### * Update Contact
-
-`PUT |  /contact/update/:id`
-
-| Key             | Value             |
-| firstName       | <value>           |
-| lastName        | <value>           |
-| jobTitle        | <value>           |
-| companyName     | <value>           |
-| email           | <value>           |
-| linkedIn        | <value>           |
-| twitter         | <value>           |
-| location        | <value>           |
-| goal            | <value>           |
-| status          | <value>           |
-| phoneNumber     | <value>           |
-| relationship    | <value>           |
-| dateSaved       | <value>           |
-| lastContacted   | <value>           |
-| followUp        | <value>           |
-| notes           | <value>           |
-
-### * Delete Single Contact
-
-`Delete |  /contact/delete`
-
-________________________________________________________________________________________________________________________________
-
-
 ### * Create new Company
 
 `POST |  /company/add`
