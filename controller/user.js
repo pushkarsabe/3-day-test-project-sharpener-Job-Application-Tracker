@@ -84,8 +84,9 @@ function generateWebToken(id) {
 
 exports.getUserData = async (req, res) => {
     try {
-        let userid = req.params.id;
-        let singleUserData = await Signup.findAll({
+        let userid = req.user.id;
+        console.log('getUserData userid = ', userid);
+        let singleUserData = await Signup.findOne({
             where: { id: userid }
         });
         res.status(200).json({ message: 'success', singleUserData: singleUserData });

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" crossorigin="anonymous"></script>
+    <title>Job</title>
+</head>
+
+<body>
+    <header>Job Builder</header>
+    <hr>
+    <br>
+    <div>
+        <form id="submitJobApplication" enctype="multipart/form-data">
+            <label for="jobDescription">Job Description:</label>
+            <textarea id="jobDescription" name="jobDescription"></textarea><br><br>
+
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea><br><br>
+
+            <label for="postedDate">Posted Date:</label>
+            <input type="date" id="postedDate" name="postedDate"><br><br>
+
+            <label for="savedDate">Saved Date:</label>
+            <input type="date" id="savedDate" name="savedDate" required><br><br>
+
+            <label for="deadlineDate">Deadline Date:</label>
+            <input type="date" id="deadlineDate" name="deadlineDate"><br><br>
+
+            <label for="appliedDate">Applied Date:</label>
+            <input type="date" id="appliedDate" name="appliedDate"><br><br>
+
+            <label for="followUpDate">Follow-Up Date:</label>
+            <input type="date" id="followUpDate" name="followUpDate"><br><br>
+
+            <label for="resumes">Resume (PDF/DOC):</label>
+            <input type="file" id="resumes" name="resumes" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
+
+            <label for="coverLetter">Cover Letter (PDF/DOC):</label>
+            <input type="file" id="coverLetter" name="coverLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
+
+            <label for="jobPosition">Job Position:</label>
+            <input type="text" id="jobPosition" name="jobPosition"><br><br>
+
+            <label for="company">Company:</label>
+            <input type="text" id="company" name="company"><br><br>
+
+            <label for="minimumSalary">Minimum Salary:</label>
+            <input type="number" id="minimumSalary" name="minimumSalary"><br><br>
+
+            <label for="maximumSalary">Maximum Salary:</label>
+            <input type="number" id="maximumSalary" name="maximumSalary"><br><br>
+
+            <label for="currency">Currency:</label>
+            <input type="text" id="currency" name="currency"><br><br>
+
+            <label for="salaryPayPeriod">Salary Pay Period:</label>
+            <input type="text" id="salaryPayPeriod" name="salaryPayPeriod"><br><br>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location"><br><br>
+
+            <label for="status">Status:</label>
+            <input type="text" id="status" name="status"><br><br>
+
+            <label for="excitement">Excitement (1-5):</label>
+            <input type="number" id="excitement" name="excitement" min="1" max="5"><br><br>
+
+            <button type="submit">Submit</button>
+            <button type="button" onclick="window.location.href ='./jobTrackerHome.html'">Back To Home</button>
+        </form>
+    </div>
+    <script src="newJob.js"></script>
+</body>
+
+</html>

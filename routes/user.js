@@ -9,7 +9,7 @@ router.post('/signup', userController.postAddSignup);
 
 router.post('/login', userController.postLogin);
 
-router.get('/data/:id', auth.authenticate, userController.getUserData);
+router.get('/singleData', auth.authenticate, userController.getUserData);
 
 router.get('/data', auth.authenticate, userController.getAllUerData);
 

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="shortcut icon" href="#">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="jobTrackerHome.css">
+</head>
+
+<body>
+    <header>
+        <h2>Job Tracker Home Page</h2>
+    </header>
+    <hr>
+
+    <div>
+        <h2>User Profile</h2>
+        <button onclick="window.location='userProfile.html'">Edit Profile</button>
+    </div>
+    <br>
+    <hr>
+
+    <div>
+        <h2>Job Tracker</h2>
+        <input id="searchInput" type="text" placeholder="Enter Company,Job,Status names">
+
+        <select id="statusFilter">
+            <option value="">All Statuses</option>
+            <option value="Interview">Interview</option>
+            <option value="Rejected">Rejected</option>
+            <option value="Offer">Offer</option>
+            <option value="Accepted">Accepted</option>
+        </select>
+
+        <label for="startDate">From:</label>
+        <input type="date" id="startDate">
+        <label for="endDate">To:</label>
+        <input type="date" id="endDate">
+
+        <button onclick="filterJobs()">Filter</button>
+        <button onclick="clearFilters()">Clear Filters</button>
+
+        <button onclick="window.location='newJob.html'">Add New Job</button>
+        <br>
+        <ol id="jobTrackerList">
+        </ol>
+    </div>
+    <div id="editJobContainer"></div>
+    <hr>
+
+    <h2>Company</h2>
+    <button onclick="window.location='company.html'">Add New Company</button>
+    <br>
+    <ol id="companyList">
+    </ol>
+    <div id="editCompanyContainer"></div>
+    <hr>
+
+    <script src="jobTrackerHome.js"></script>
+</body>
+
+</html>

@@ -5,6 +5,7 @@ const sendEmail = require('../config/emailService');
 const schedule = require('node-schedule');
 
 exports.postAddnewJob = async (req, res, next) => {
+    // console.log("Received files:", req.files);
     try {
         let resumeUrl = null;
         let coverLetterUrl = null;
@@ -22,8 +23,8 @@ exports.postAddnewJob = async (req, res, next) => {
         };
 
 
-        if (req.files && req.files.resume) {
-            resumeUrl = await uploadToCloudinary(req.files.resume[0]);
+        if (req.files && req.files.resumes) {
+            resumeUrl = await uploadToCloudinary(req.files.resumes[0]);
         }
 
         if (req.files && req.files.coverLetter) {
@@ -74,7 +75,6 @@ exports.postAddnewJob = async (req, res, next) => {
                 })
             }
         }
-
         res.status(201).json({ message: "Job created", newJob });
 
     } catch (err) {
@@ -83,12 +83,11 @@ exports.postAddnewJob = async (req, res, next) => {
     }
 };
 
-
 exports.getJobData = async (req, res) => {
     try {
         let userid = req.params.id;
         console.log("getJobData userid = ", userid);
-        let singleJobData = await JobTracker.findAll({
+        let singleJobData = await JobTracker.findOne({
             where: { id: userid }
         });
         // console.log("singleJobData = ", singleJobData);
@@ -191,6 +190,7 @@ exports.deleteJob = async (req, res) => {
             { isDeleted: true },
             { where: { id: jobId, userId: userId } }
         );
+        console.error('updatedCount:', updatedCount);
 
         if (updatedCount === 0) {
             return res.status(404).json({ message: 'Job not found or update failed' });

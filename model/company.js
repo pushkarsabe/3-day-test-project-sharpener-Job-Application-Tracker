@@ -8,7 +8,7 @@ let Company = sequelize.define('company', {
         allowNull: false,
         primaryKey: true
     },
-    Name: {
+    name: {
         type: Sequelize.STRING,
         allowNull: false,
     },

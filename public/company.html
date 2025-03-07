@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon" href="#">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" crossorigin="anonymous"></script>
+    <title>Company</title>
+</head>
+
+<body>
+    <header>Company Information Form</header>
+    <hr>
+    <br>
+    <div>
+        <form id="companyForm">
+            <label for="name">Company Name :</label>
+            <input type="text" id="name" name="name" required>
+            <br><br>
+
+            <label for="companySize">Company Size:</label>
+            <input type="text" id="companySize" name="companySize">
+            <br><br>
+
+            <label for="companyType">Company Type:</label>
+            <input type="text" id="companyType" name="companyType">
+            <br><br>
+
+            <label for="location">Location:</label>
+            <input type="text" id="location" name="location">
+            <br><br>
+
+            <label for="website">Website:</label>
+            <input type="text" id="website" name="website">
+            <br><br>
+
+            <label for="linkedIn">LinkedIn:</label>
+            <input type="text" id="linkedIn" name="linkedIn">
+            <br><br>
+
+            <label for="yearFounded">Year Founded:</label>
+            <input type="text" id="yearFounded" name="yearFounded">
+            <br><br>
+
+            <label for="notes">Notes:</label>
+            <textarea id="notes" name="notes"></textarea>
+            <br><br>
+
+            <button type="submit">Submit</button>
+            <button type="button" onclick="window.location.href ='./jobTrackerHome.html'">Back To Home</button>
+        </form>
+    </div>
+    <script src="company.js"></script>
+</body>
+
+</html>

@@ -3,7 +3,7 @@ require('dotenv').config();
 
 exports.postAddnewCompany = async (req, res, next) => {
     try {
-        const Name = req.body.Name;
+        const name = req.body.name;
         const companySize = req.body.companySize;
         const companyType = req.body.companyType;
         const location = req.body.location;
@@ -11,7 +11,7 @@ exports.postAddnewCompany = async (req, res, next) => {
         const linkedIn = req.body.linkedIn;
         const yearFounded = req.body.yearFounded;
         const notes = req.body.notes;
-        console.log('Name = ' + Name);
+        console.log('name = ' + name);
         console.log('companySize = ' + companySize);
         console.log('companyType = ' + companyType);
         console.log('location = ' + location);
@@ -21,7 +21,7 @@ exports.postAddnewCompany = async (req, res, next) => {
         console.log('notes = ' + notes);
 
         const newCompany = await Company.create({
-            Name: Name,
+            name: name,
             companySize: companySize,
             companyType: companyType,
             location: location,
@@ -49,7 +49,7 @@ exports.getCompanyData = async (req, res) => {
     try {
         let userid = req.params.id;
         console.log("getCompanyData userid = ", userid);
-        let singleCompanyData = await Company.findAll({
+        let singleCompanyData = await Company.findOne({
             where: { id: userid }
         });
         // console.log("singleCompanyData = ", singleCompanyData);
@@ -76,11 +76,12 @@ exports.updateCompany = async (req, res) => {
     try {
         const userid = req.params.id;
         console.log("updateCompany...userid = ", userid);
-        const { Name, companySize, companyType, location, website, linkedIn, yearFounded, notes } = req.body;
-        console.log('Name = ' + Name);
+        const { name, companySize, companyType, location, website, linkedIn, yearFounded, notes } = req.body;
+        console.log('name = ' + name);
         console.log('companySize = ' + companySize);
         console.log('companyType = ' + companyType);
         console.log('location = ' + location);
+
         console.log('website = ' + website);
         console.log('linkedIn = ' + linkedIn);
         console.log('yearFounded = ' + yearFounded);
@@ -93,7 +94,7 @@ exports.updateCompany = async (req, res) => {
         }
         //update if the user sends the data
         const updatedData = {};
-        if (Name) updatedData.Name = Name;
+        if (name) updatedData.name = name;
         if (companySize) updatedData.companySize = companySize;
         if (companyType) updatedData.companyType = companyType;
         if (location) updatedData.location = location;
