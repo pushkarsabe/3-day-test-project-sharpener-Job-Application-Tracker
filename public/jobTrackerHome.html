@@ -14,12 +14,12 @@
     <header>
         <h2>Job Tracker Home Page</h2>
     </header>
-    <hr>
 
-    <div>
+    <div id="userProfileDiv">
         <h2>User Profile</h2>
-        <button onclick="openProfilePopup()">Edit Profile</button>
+        <button id="openPopupButton" onclick="openProfilePopup()">Edit User Profile</button>
     </div>
+
     <div id="profilePopup" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeProfilePopup()">&times;</span>
@@ -39,7 +39,7 @@
     <br>
     <hr>
 
-    <div>
+    <div id="jobTrackerDiv">
         <h2>Job Tracker</h2>
         <input id="searchInput" type="text" placeholder="Enter Company,Job,Status names">
 
@@ -56,10 +56,10 @@
         <input type="date" id="startDate">
         <label for="endDate">To:</label>
         <input type="date" id="endDate">
-        <button onclick="clearFilters()">Clear Filters</button>
-        <button onclick="window.location='newJob.html'">Add New Job</button>
+        <button id="clearFiltersButtonJobTracker" onclick="clearFilters()">Clear Filters</button>
+        <button id="moveToJobTrackerFormButton" onclick="window.location='newJob.html'">Add New Job</button>
         <br>
-        <table border="1">
+        <table id="jobTrackerTable" border="1">
             <thead>
                 <tr>
                     <th>Company</th>
@@ -82,41 +82,44 @@
             <div id="editJobContainer"></div>
         </div>
     </div>
-    <hr>
 
-    <div>
+
+    <div id="displayChartDiv">
         <canvas id="myChart"></canvas>
     </div>
     <hr>
 
-    <h2>Company</h2>
-    <input id="companySearchInput" type="text" placeholder="Enter Company Name,Location">
-    <button onclick="window.location='company.html'">Add New Company</button>
-    <br><br>
-    <table border="1" id="companyTable">
-        <thead>
-            <tr>
-                <th>Company Name</th>
-                <th>Company Size</th>
-                <th>Company Type</th>
-                <th>Location</th>
-                <th>Website</th>
-                <th>LinkedIn</th>
-                <th>Year Founded</th>
-                <th>Notes</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody id="companyTableBody"></tbody>
-    </table>
 
-    <div id="editCompanyModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeEditCompanyModal()">&times;</span>
-            <div id="editCompanyContainer"></div>
+    <div id="companyDiv">
+        <h2>Company</h2>
+        <input id="companySearchInput" type="text" placeholder="Enter Company Name,Location">
+        <button id="moveToCompanyFormButton" onclick="window.location='company.html'">Add New Company</button>
+        
+        <table border="1" id="companyTable">
+            <thead>
+                <tr>
+                    <th>Company Name</th>
+                    <th>Company Size</th>
+                    <th>Company Type</th>
+                    <th>Location</th>
+                    <th>Website</th>
+                    <th>LinkedIn</th>
+                    <th>Year Founded</th>
+                    <th>Notes</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="companyTableBody"></tbody>
+        </table>
+
+        <div id="editCompanyModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeEditCompanyModal()">&times;</span>
+                <div id="editCompanyContainer"></div>
+            </div>
         </div>
     </div>
-    <hr>
+
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="jobTrackerHome.js"></script>

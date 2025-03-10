@@ -34,7 +34,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching jobs:", error);
     }
 });
+function showMessage(msgText, status) {
+    return new Promise((resolve) => {
+        const existingMsg = document.getElementById("floatingMessage");
+        if (existingMsg) {
+            existingMsg.remove();
+        }
 
+        const msgDiv = document.createElement("div");
+        msgDiv.id = "floatingMessage";
+        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+        msgDiv.textContent = msgText;
+
+        document.body.prepend(msgDiv);
+
+        setTimeout(() => {
+            msgDiv.remove();
+            resolve();
+        }, 2000);
+    });
+}
 function displayChart() {
     const ctx = document.getElementById('myChart');
 
@@ -114,26 +133,7 @@ async function loadUserData() {
         console.log('Error fetching user data:', err);
     }
 }
-function showMessage(msgText, status) {
-    return new Promise((resolve) => {
-        const existingMsg = document.getElementById("floatingMessage");
-        if (existingMsg) {
-            existingMsg.remove();
-        }
 
-        const msgDiv = document.createElement("div");
-        msgDiv.id = "floatingMessage";
-        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
-        msgDiv.textContent = msgText;
-
-        document.body.prepend(msgDiv);
-
-        setTimeout(() => {
-            msgDiv.remove();
-            resolve();
-        }, 2000);
-    });
-}
 document.getElementById('editUserForm').addEventListener('submit', async function (event) {
     event.preventDefault();
     console.log('Updating user profile...');
@@ -177,8 +177,8 @@ function displayJobs(jobs) {
                 <td>${job.appliedDate || "N/A"}</td>
                 <td>${job.minimumSalary} - ${job.maximumSalary} ${job.currency}</td>
                 <td>
-                    <button onclick="editJob(${job.id})">Edit</button>
-                    <button onclick="deleteJob(${job.id})">Delete</button>
+                    <button class="edit-btn" onclick="editJob(${job.id})">Edit</button>
+                    <button class="delete-btn" onclick="deleteJob(${job.id})">Delete</button>
                 </td>
             `;
 
@@ -373,8 +373,8 @@ function displayCompany(companies) {
                 <td>${company.yearFounded}</td>
                 <td>${company.notes}</td>
                 <td>
-                    <button onclick="editCompany(${company.id})">Edit</button>
-                    <button onclick="deleteCompany(${company.id})">Delete</button>
+                    <button class="edit-btn" onclick="editCompany(${company.id})">Edit</button>
+                    <button class="delete-btn" onclick="deleteCompany(${company.id})">Delete</button>
                 </td>
             `;
             tableBody.appendChild(row);

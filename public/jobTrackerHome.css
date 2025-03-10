@@ -13,7 +13,8 @@
     background-color: white;
     padding: 20px;
     margin: 10% auto;
-    width: 50%;
+    width: 30%;
+    height: 30%;
     border-radius: 10px;
 }
 
@@ -23,6 +24,20 @@
     cursor: pointer;
 }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* displaying message css */
 #floatingMessage {
     position: fixed;
     top: 0;
@@ -46,4 +61,296 @@
 .failure {
     background-color: red;
     border: 2px solid darkred;
+}
+
+header {
+    background-color: #0073e6;
+    color: white;
+    text-align: center;
+    padding: 15px;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+/* User Profile Div Styling */
+#userProfileDiv {
+    background-color: #f8f9fa;
+    width: 100%;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-radius: 8px;
+    height: 120px;
+    position: relative;
+}
+
+#userProfileDiv h2 {
+    margin: 18px;
+    align-self: flex-start;
+}
+
+#openPopupButton {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #4FFFB0;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+}
+
+#openPopupButton:hover {
+    background-color: #00e67e;
+}
+
+/* Job Tracker Div Styling */
+#jobTrackerDiv {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#jobTrackerDiv h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+#searchInput,
+#statusFilter,
+#startDate,
+#endDate {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+#searchInput {
+    width: 250px;
+}
+
+#statusFilter {
+    width: 150px;
+    height: 38px;
+    background-color: white;
+}
+
+#startDate,
+#endDate {
+    cursor: pointer;
+}
+
+#searchInput:focus,
+#statusFilter:focus,
+#startDate:focus,
+#endDate:focus {
+    outline: none;
+    border-color: #4FFFB0;
+    box-shadow: 0 0 3px rgba(79, 255, 176, 0.5);
+}
+
+label[for="startDate"],
+label[for="endDate"] {
+    margin-right: 5px;
+    font-weight: 500;
+}
+
+/* Clear Filters Button  */
+#clearFiltersButtonJobTracker {
+    background-color: #ffa64d;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-right: 10px;
+    font-weight: bold;
+}
+
+#clearFiltersButtonJobTracker:hover {
+    background-color: #ff8c1a;
+    transform: scale(1.05);
+}
+
+/* Add New Job Button */
+#moveToJobTrackerFormButton {
+    background-color: #4FFFB0;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+    font-weight: bold;
+}
+
+#moveToJobTrackerFormButton:hover {
+    background-color: #00e67e;
+}
+
+/* Table Styling */
+#jobTrackerTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#jobTrackerTable th {
+    background-color: #0073e6;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+#jobTrackerTable td {
+    padding: 12px 15px;
+    border-top: 1px solid #e0e0e0;
+    color: #333;
+}
+
+#jobTrackerTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#jobTrackerTable tbody tr:hover {
+    background-color: #f0f0f0;
+    transition: background-color 0.2s ease;
+}
+
+.edit-btn {
+    background-color: #e0b0ff;
+    color: #333;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+    background-color: #d199ef;
+}
+
+.delete-btn {
+    background-color: #ff6b6b;
+    color: white;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.delete-btn:hover {
+    background-color: #e55353;
+}
+
+
+
+/* Company Div Styling */
+#companyDiv {
+    background-color: #f8f9fa;
+    border-radius: 8px;
+    padding: 25px;
+    margin: 20px 0;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#companyDiv h2 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 24px;
+}
+
+/* Company Search Input */
+#companySearchInput {
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    margin-right: 10px;
+    margin-bottom: 15px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    width: 250px;
+}
+
+#companySearchInput:focus {
+    outline: none;
+    border-color: #4FFFB0;
+    box-shadow: 0 0 3px rgba(79, 255, 176, 0.5);
+}
+
+/* Add New Company Button */
+#moveToCompanyFormButton {
+    background-color: #4FFFB0;
+    color: black;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    outline: none;
+    font-weight: bold;
+    margin-bottom: 15px;
+}
+
+#moveToCompanyFormButton:hover {
+    background-color: #00e67e;
+}
+
+
+/* Company Table Styling */
+#companyTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    background-color: white;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+#companyTable th {
+    background-color: #0073e6;
+    color: white;
+    padding: 12px 15px;
+    text-align: left;
+    font-weight: 600;
+}
+
+#companyTable td {
+    padding: 12px 15px;
+    border-top: 1px solid #e0e0e0;
+    color: #333;
+}
+
+#companyTable tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+#companyTable tbody tr:hover {
+    background-color: #f0f0f0;
+    transition: background-color 0.2s ease;
 }

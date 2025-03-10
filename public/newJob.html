@@ -5,70 +5,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="shortcut icon" href="#">
-    <link rel="stylesheet" href="company.css">
+    <link rel="stylesheet" href="newJob.css">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" crossorigin="anonymous"></script>
     <title>Job</title>
 </head>
 
 <body>
     <header>Job Builder</header>
-    <hr>
-    <br>
-    <div>
+
+    <div id="jobApplicationnDiv">
         <form id="submitJobApplication" enctype="multipart/form-data">
             <label for="jobDescription">Job Description:</label>
-            <textarea id="jobDescription" name="jobDescription"></textarea><br><br>
+            <textarea id="jobDescription" name="jobDescription"></textarea>
 
             <label for="notes">Notes:</label>
-            <textarea id="notes" name="notes"></textarea><br><br>
+            <textarea id="notes" name="notes"></textarea>
 
             <label for="postedDate">Posted Date:</label>
-            <input type="date" id="postedDate" name="postedDate"><br><br>
+            <input type="date" id="postedDate" name="postedDate">
 
             <label for="savedDate">Saved Date:</label>
-            <input type="date" id="savedDate" name="savedDate" required><br><br>
+            <input type="date" id="savedDate" name="savedDate" required>
 
             <label for="deadlineDate">Deadline Date:</label>
-            <input type="date" id="deadlineDate" name="deadlineDate"><br><br>
+            <input type="date" id="deadlineDate" name="deadlineDate">
 
             <label for="appliedDate">Applied Date:</label>
-            <input type="date" id="appliedDate" name="appliedDate"><br><br>
+            <input type="date" id="appliedDate" name="appliedDate">
 
             <label for="followUpDate">Follow-Up Date:</label>
-            <input type="date" id="followUpDate" name="followUpDate"><br><br>
+            <input type="date" id="followUpDate" name="followUpDate">
 
             <label for="resumes">Resume (PDF/DOC):</label>
-            <input type="file" id="resumes" name="resumes" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
+            <input type="file" id="resumes" name="resumes" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
             <label for="coverLetter">Cover Letter (PDF/DOC):</label>
-            <input type="file" id="coverLetter" name="coverLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><br><br>
+            <input type="file" id="coverLetter" name="coverLetter" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png">
 
             <label for="jobPosition">Job Position:</label>
-            <input type="text" id="jobPosition" name="jobPosition"><br><br>
+            <input type="text" id="jobPosition" name="jobPosition">
 
             <label for="company">Company:</label>
-            <input type="text" id="company" name="company"><br><br>
+            <input type="text" id="company" name="company">
 
             <label for="minimumSalary">Minimum Salary:</label>
-            <input type="number" id="minimumSalary" name="minimumSalary"><br><br>
+            <input type="number" id="minimumSalary" name="minimumSalary">
 
             <label for="maximumSalary">Maximum Salary:</label>
-            <input type="number" id="maximumSalary" name="maximumSalary"><br><br>
+            <input type="number" id="maximumSalary" name="maximumSalary">
 
             <label for="currency">Currency:</label>
-            <input type="text" id="currency" name="currency"><br><br>
+            <input type="text" id="currency" name="currency">
 
             <label for="salaryPayPeriod">Salary Pay Period:</label>
-            <input type="text" id="salaryPayPeriod" name="salaryPayPeriod"><br><br>
+            <input type="text" id="salaryPayPeriod" name="salaryPayPeriod">
 
             <label for="location">Location:</label>
-            <input type="text" id="location" name="location"><br><br>
+            <input type="text" id="location" name="location">
 
             <label for="status">Status:</label>
-            <input type="text" id="status" name="status"><br><br>
+            <input type="text" id="status" name="status">
 
             <label for="excitement">Excitement (1-5):</label>
-            <input type="number" id="excitement" name="excitement" min="1" max="5"><br><br>
+            <input type="number" id="excitement" name="excitement" min="1" max="5">
 
             <button type="submit">Submit</button>
             <button type="button" onclick="window.location.href ='./jobTrackerHome.html'">Back To Home</button>
