@@ -1,10 +1,10 @@
 console.log('jobTrackerHome loaded');
 const HOST = 'localhost';
 let allJobs = [];
+let allCompanies = [];
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
-
     if (!token) {
         console.error("No token found! User might not be logged in.");
         return;
@@ -18,12 +18,64 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         allJobs = response1.data.allJobData;
         displayJobs(allJobs);
+        // console.log('allJobs = ', allJobs);
+
+        let allStatusCount = allJobs.length, interviewCount = 0, rejectedcount = 0, offerCount = 0, acceptedCount = 0, appliedCount = 0;
+        // console.log('allStatusCount ', allStatusCount, ' interviewCount ', interviewCount, ' rejectedcount ', rejectedcount, ' offerCount ', offerCount, ' acceptedCount ', acceptedCount, ' appliedCount ', appliedCount);
+
+        allJobs.forEach(jobs => {
+            if (jobs.status.toLowerCase() === 'interview') {
+                interviewCount++;
+            }
+            else if (jobs.status.toLowerCase() === 'rejected') {
+                rejectedcount++;
+            }
+            else if (jobs.status.toLowerCase() === 'offer') {
+                offerCount++;
+            }
+            else if (jobs.status.toLowerCase() === 'accepted') {
+                acceptedCount++;
+            }
+            else if (jobs.status.toLowerCase() === 'applied') {
+                appliedCount++;
+            }
+        })
+        console.log('allStatusCount ', allStatusCount, ' interviewCount ', interviewCount, ' rejectedcount ', rejectedcount, ' offerCount ', offerCount, ' acceptedCount ', acceptedCount, ' appliedCount ', appliedCount);
+
+        //dispay the bar chart
+        const ctx = document.getElementById('myChart');
+        if (ctx) {
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['All Statuses', 'Interview', 'Rejected', 'Offer', 'Accepted', 'Applied'],
+                    datasets: [{
+                        label: 'jobs and status',
+                        data: [allStatusCount, interviewCount, rejectedcount, offerCount, acceptedCount, appliedCount],
+                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'],
+                        borderColor: ['rgba(0, 0, 0, 0.8)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        } else {
+            console.error("Chart element not found!");
+        }
 
         const response2 = await axios.get(`http://${HOST}:5000/company/data`, {
             headers: {
                 Authorization: `${token}`
             }
         });
+        allCompanies = response2.data.allCompanyData;
         displayCompany(response2.data.allCompanyData);
 
     } catch (error) {
@@ -33,35 +85,31 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 function displayJobs(jobs) {
     console.log('displayJobs jobs', jobs);
-    const jobTrackerList = document.getElementById("jobTrackerList");
-    jobTrackerList.innerHTML = ""; // Clear previous data
+    const jobTrackerTableBody = document.getElementById("jobTrackerTableBody");
+    jobTrackerTableBody.innerHTML = "";
 
     jobs.forEach(job => {
-        //print only not deleted jobs
-        if (job.isDeleted === false) {
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <strong>Company:</strong> ${job.company} <br>
-                <strong>Job Position:</strong> ${job.jobPosition} <br>
-                <strong>Job Description:</strong> ${job.jobDescription} <br>
-                <strong>Location:</strong> ${job.location} <br>
-                <strong>Posted Date:</strong> ${job.postedDate} <br>
-                <strong>Saved Date:</strong> ${job.savedDate} <br>
-                <strong>Deadline Date:</strong> ${job.deadlineDate} <br>
-                <strong>Applied Date:</strong> ${job.appliedDate} <br>
-                <strong>Follow-up Date:</strong> ${job.followUpDate} <br>
-                <strong>Minimum Salary:</strong> ${job.minimumSalary} ${job.currency} <br>
-                <strong>Maximum Salary:</strong> ${job.maximumSalary} ${job.currency} <br>
-                <strong>Status:</strong> ${job.status} <br>
-                <strong>Excitement Level:</strong> ${job.excitement} <br>
-                <button onclick="editJob(${job.id})">Edit</button>
-                <button onclick="deleteJob(${job.id})">Delete</button>
-                <hr>
+        if (!job.isDeleted) {
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${job.company}</td>
+                <td>${job.jobPosition}</td>
+                <td>${job.status}</td>
+                <td>${job.location}</td>
+                <td>${job.appliedDate || "N/A"}</td>
+                <td>${job.minimumSalary} - ${job.maximumSalary} ${job.currency}</td>
+                <td>
+                    <button onclick="editJob(${job.id})">Edit</button>
+                    <button onclick="deleteJob(${job.id})">Delete</button>
+                </td>
             `;
-            jobTrackerList.appendChild(li);
+
+            jobTrackerTableBody.appendChild(row);
         }
     });
 }
+
 
 async function deleteJob(jobId) {
     console.log(`deleteJob job with ID: ${jobId}`);
@@ -115,13 +163,18 @@ async function editJob(jobId) {
         <label>Location: <input type="text" id="editLocation" value="${job.location}"></label><br>
         <label>Status: <input type="text" id="editStatus" value="${job.status}"></label><br>
         <button onclick="saveJob(${job.id})">Save</button>
-        <button onclick="cancelJobEdit()">Cancel</button>
+        <button onclick="closeEditJobModal()">Cancel</button>
     `;
         document.getElementById("editJobContainer").innerHTML = formHtml;
+        document.getElementById("editJobModal").style.display = "block";
     }
     catch (err) {
         console.log(('err', err));
     }
+}
+function closeEditJobModal() {
+    document.getElementById("editJobModal").style.display = "none";
+    document.getElementById("editJobContainer").innerHTML = "";
 }
 
 async function saveJob(jobId) {
@@ -144,6 +197,18 @@ async function saveJob(jobId) {
         });
         console.log("Update response:", response.data);
         alert("Job updated successfully!");
+
+        closeEditJobModal();
+
+        const updatedJobResponse = await axios.get(`http://${HOST}:5000/jobTracker/data`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+
+        allJobs = updatedJobResponse.data.allJobData;
+        displayJobs(allJobs);
+
     }
     catch (err) {
         console.log(('err', err));
@@ -155,32 +220,39 @@ function cancelJobEdit() {
     document.getElementById("editJobContainer").innerHTML = "";
 }
 
-function filterJobs() {
+async function filterJobs() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
     const startDate = document.getElementById("startDate").value;
     const endDate = document.getElementById("endDate").value;
-    console.log('searchInput = ', searchInput);
-    console.log('statusFilter = ', statusFilter);
-    console.log('startDate = ', startDate);
-    console.log('endDate = ', endDate);
+    const token = localStorage.getItem("token");
 
-    const filteredJobs = allJobs.filter(job => {
-        const companyMatch = job.company.toLowerCase().includes(searchInput);
-        const positionMatch = job.jobPosition.toLowerCase().includes(searchInput);
-        const statusMatch = job.status.toLowerCase().includes(searchInput) || (statusFilter ? job.status.toLowerCase() === statusFilter : true);
-        console.log('companyMatch = ', companyMatch);
-        console.log('positionMatch = ', positionMatch);
-        console.log('statusMatch = ', statusMatch);
+    console.log('searchInput =', searchInput);
+    console.log('statusFilter =', statusFilter);
+    console.log('startDate =', startDate);
+    console.log('endDate =', endDate);
 
-        const jobDate = new Date(job.appliedDate);
-        const startMatch = startDate ? jobDate >= new Date(startDate) : true;
-        const endMatch = endDate ? jobDate <= new Date(endDate) : true;
+    const params = new URLSearchParams();
+    if (searchInput) params.append('search', searchInput);
+    if (statusFilter) params.append('status', statusFilter);
+    if (startDate) params.append('startDate', startDate);
+    if (endDate) params.append('endDate', endDate);
+    console.log('params =', params);
 
-        return (companyMatch || positionMatch || statusMatch) && startMatch && endMatch;
-    });
-    displayJobs(filteredJobs);
+    try {
+        const response = await axios.get(`http://localhost:5000/jobTracker/filter?${params.toString()}`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        console.log('response =', response.data.filteredJobs);
+        displayJobs(response.data.filteredJobs);
+    }
+    catch (error) {
+        console.error("Error fetching jobs:", error);
+    }
 }
+
 document.getElementById("searchInput").addEventListener("input", filterJobs);
 document.getElementById("statusFilter").addEventListener("change", filterJobs);
 document.getElementById("startDate").addEventListener("change", filterJobs);
@@ -194,28 +266,32 @@ function clearFilters() {
     displayJobs(allJobs);
 }
 
+
+
 function displayCompany(companies) {
     console.log('displayCompany companies', companies);
-    const companyList = document.getElementById("companyList");
-    companyList.innerHTML = "";
+    const tableBody = document.getElementById("companyTableBody");
+    tableBody.innerHTML = "";
 
     companies.forEach(company => {
         if (company.isDeleted === false) {
-            const li = document.createElement("li");
-            li.innerHTML = `
-                <strong>Company Name:</strong> ${company.name} <br>
-                <strong>Company Size:</strong> ${company.companySize} <br>
-                <strong>Company Type:</strong> ${company.companyType} <br>
-                <strong>Location:</strong> ${company.location} <br>
-                <strong>Website:</strong> <a href="${company.website}" target="_blank">${company.website}</a> <br>
-                <strong>LinkedIn:</strong> <a href="${company.linkedIn}" target="_blank">${company.linkedIn}</a> <br>
-                <strong>Year Founded:</strong> ${company.yearFounded} <br>
-                <strong>Notes:</strong> ${company.notes} <br>
-                <button onclick="editCompany(${company.id})">Edit</button>
-                <button onclick="deleteCompany(${company.id})">Delete</button>
-                <hr>
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+                <td>${company.name}</td>
+                <td>${company.companySize}</td>
+                <td>${company.companyType}</td>
+                <td>${company.location}</td>
+                <td><a href="${company.website}" target="_blank">${company.website}</a></td>
+                <td><a href="${company.linkedIn}" target="_blank">${company.linkedIn}</a></td>
+                <td>${company.yearFounded}</td>
+                <td>${company.notes}</td>
+                <td>
+                    <button onclick="editCompany(${company.id})">Edit</button>
+                    <button onclick="deleteCompany(${company.id})">Delete</button>
+                </td>
             `;
-            companyList.appendChild(li);
+            tableBody.appendChild(row);
         }
     });
 }
@@ -240,7 +316,7 @@ async function editCompany(companyId) {
         let company = response.data.singleCompanyData;
         console.log('Company data:', company);
 
-        // Generate an edit form with the company's details
+        // Generate an edit form inside modal
         const formHtml = `
             <h3>Edit Company</h3>
             <label>Company Name: <input type="text" id="editCompanyName" value="${company.name}"></label><br>
@@ -252,13 +328,19 @@ async function editCompany(companyId) {
             <label>Year Founded: <input type="number" id="editYearFounded" value="${company.yearFounded}"></label><br>
             <label>Notes: <textarea id="editNotes">${company.notes}</textarea></label><br>
             <button onclick="saveCompany(${company.id})">Save</button>
-            <button onclick="cancelCompanyEdit()">Cancel</button>
+            <button onclick="closeEditCompanyModal()">Cancel</button>
         `;
         document.getElementById("editCompanyContainer").innerHTML = formHtml;
+        document.getElementById("editCompanyModal").style.display = "block";
 
     } catch (err) {
         console.error("Error fetching company data:", err);
     }
+}
+
+function closeEditCompanyModal() {
+    document.getElementById("editCompanyModal").style.display = "none";
+    document.getElementById("editCompanyContainer").innerHTML = "";
 }
 
 async function saveCompany(companyId) {
@@ -290,8 +372,19 @@ async function saveCompany(companyId) {
         });
         console.log("Company updated successfully:", response.data);
         alert("Company updated successfully!");
-
         document.getElementById("editCompanyContainer").innerHTML = "";
+
+        closeEditCompanyModal();
+
+        const response2 = await axios.get(`http://${HOST}:5000/company/data`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        allCompanies = response2.data.allCompanyData;
+        displayCompany(response2.data.allCompanyData);
+
+
     }
     catch (err) {
         console.error("Error updating company:", err);
@@ -330,3 +423,33 @@ async function deleteCompany(companyId) {
 function cancelCompanyEdit() {
     document.getElementById("editCompanyContainer").innerHTML = "";
 }
+
+async function searchCompany() {
+    const searchInputCompany = document.getElementById("companySearchInput").value.trim().toLowerCase();
+    const token = localStorage.getItem("token");
+    console.log('searchInputCompany =', searchInputCompany);
+
+    if (!searchInputCompany) {
+        console.log("Search input is empty, clearing results.");
+        displayCompany(allCompanies);
+        return;
+    }
+
+    if (!token) {
+        console.error("No token found! User might not be logged in.");
+        return;
+    }
+    try {
+        const response = await axios.get(`http://localhost:5000/company/search/${searchInputCompany}`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        console.log('response =', response.data.filteredCompany);
+        displayCompany(response.data.filteredCompany);
+    }
+    catch (error) {
+        console.error("Error fetching companie:", error);
+    }
+}
+document.getElementById("companySearchInput").addEventListener("input", searchCompany);

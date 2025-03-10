@@ -13,5 +13,7 @@ router.get('/data', auth.authenticate, companyController.getAllCompanyData);
 router.put('/update/:id', auth.authenticate, companyController.updateCompany);
 //delete the company
 router.delete('/delete/:id', auth.authenticate, companyController.deleteCompany);
+//to search for comapny name
+router.get('/search/:companyName', auth.authenticate, companyController.searchCompany);
 
 module.exports = router;

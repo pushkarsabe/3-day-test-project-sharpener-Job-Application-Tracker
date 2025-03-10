@@ -29,7 +29,7 @@ exports.postAddnewCompany = async (req, res, next) => {
             linkedIn: linkedIn,
             yearFounded: yearFounded,
             notes: notes,
-            userId:req.user.id
+            userId: req.user.id
         });
 
         if (!newCompany) {
@@ -63,7 +63,14 @@ exports.getCompanyData = async (req, res) => {
 
 exports.getAllCompanyData = async (req, res) => {
     try {
-        let allCompanyData = await Company.findAll({ where: { userId: req.user.id } });
+        let allCompanyData = await Company.findAll(
+            {
+                where:
+                {
+                    userId: req.user.id,
+                    isDeleted: false
+                }
+            });
         res.status(200).json({ message: 'success', allCompanyData: allCompanyData });
     }
     catch (err) {
@@ -135,3 +142,29 @@ exports.deleteCompany = async (req, res) => {
     }
 }
 
+exports.searchCompany = async (req, res) => {
+    try {
+        console.log('searchCompany userid = ', req.user.id);
+        let companyName = req.params.companyName;
+        console.log('companyName = ', companyName);
+        let allCompany = await Company.findAll({
+            where: {
+                userId: req.user.id,
+                isDeleted: false
+            }
+        })
+        // console.log('allCompany = ' ,allCompany);
+
+        let filteredCompany = allCompany.filter(company => {
+            return company.name.toLowerCase().includes(companyName) ||
+                company.location.toLowerCase().includes(companyName);
+        })
+
+        res.status(200).json({ message: 'search Company data', filteredCompany: filteredCompany });
+
+    }
+    catch (err) {
+        console.error('Error search Company data:', err);
+        res.status(500).json({ message: 'Failed to search Company data' })
+    }
+}

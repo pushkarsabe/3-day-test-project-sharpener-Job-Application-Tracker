@@ -14,5 +14,7 @@ router.get('/data', auth.authenticate, jobTrackerController.getAllJobData);
 router.put('/update/:id', auth.authenticate, jobTrackerController.updateJob);
 //delete the job
 router.delete('/delete/:id', auth.authenticate, jobTrackerController.deleteJob);
+//serach the job by company,jobPosition or status
+router.get('/filter', auth.authenticate, jobTrackerController.filterJobs);
 
 module.exports = router;;

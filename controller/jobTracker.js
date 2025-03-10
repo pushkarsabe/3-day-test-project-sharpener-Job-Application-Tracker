@@ -101,8 +101,15 @@ exports.getJobData = async (req, res) => {
 
 exports.getAllJobData = async (req, res) => {
     try {
-        let allJobData = await JobTracker.findAll({ where: { userId: req.user.id } });
-        res.status(200).json({ message: 'success', allJobData: allJobData, isDeleted: false });
+        let allJobData = await JobTracker.findAll(
+            {
+                where:
+                {
+                    userId: req.user.id,
+                    isDeleted: false
+                }
+            });
+        res.status(200).json({ message: 'success', allJobData: allJobData });
     }
     catch (err) {
         console.error('Error fetching all job data:', err);
@@ -201,5 +208,61 @@ exports.deleteJob = async (req, res) => {
     catch (err) {
         console.error('Error delete Job data:', err);
         res.status(500).json({ message: 'Failed to delete Job data' });
+    }
+};
+
+exports.filterJobs = async (req, res) => {
+    try {
+        console.log("filterJobs userid ", req.user.id);
+        const { search, status, startDate, endDate } = req.query;
+        console.log("search:", search);
+        console.log("status:", status);
+        console.log("startDate:", startDate);
+        console.log("endDate:", endDate);
+
+        const alljobs = await JobTracker.findAll(
+            {
+                where: {
+                    userId: req.user.id,
+                    isDeleted: false
+                }
+            }
+        );
+        console.log("alljobs:", alljobs.length);
+
+        let filteredJobs = alljobs.filter(job => {
+
+            let company = job.company ? job.company.toLowerCase() : "";
+            let jobPosition = job.jobPosition ? job.jobPosition.toLowerCase() : "";
+            let jobStatus = job.status ? job.status.toLowerCase() : "";
+
+            console.log(`Checking job: company=${company}, jobPosition=${jobPosition}, status=${jobStatus}`);
+
+            let companyMatch = search ? company.includes(search.toLowerCase()) : true;
+            let positionMatch = search ? jobPosition.includes(search.toLowerCase()) : true;
+            let statusSearchMatch = search ? jobStatus.includes(search.toLowerCase()) : true;
+            console.log("companyMatch:", companyMatch);
+            console.log("positionMatch:", positionMatch);
+            console.log("statusSearchMatch:", statusSearchMatch);
+
+            let statusMatch = status ? jobStatus === status.toLowerCase() : true;
+            console.log("statusMatch:", statusMatch);
+
+            let dateMatch = true;
+            if (startDate || endDate) {
+                if (!job.savedDate) return false;
+                let savedDate = new Date(job.savedDate);
+                console.log("savedDate:", savedDate);
+                if (startDate) dateMatch = dateMatch && savedDate >= new Date(startDate);
+                if (endDate) dateMatch = dateMatch && savedDate <= new Date(endDate);
+            }
+
+            return (companyMatch || positionMatch || statusSearchMatch) && statusMatch && dateMatch;
+        })
+        // console.log("filteredJobs:", filteredJobs);`
+        res.status(200).json({ message: "success", filteredJobs });
+    } catch (err) {
+        console.error("Error filtering job data:", err);
+        res.status(500).json({ message: "Failed to filter job data" });
     }
 };
