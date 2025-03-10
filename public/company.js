@@ -7,6 +7,27 @@ document.getElementById('companyForm').addEventListener('submit', function (even
     submitData();
 });
 
+function showMessage(msgText, status) {
+    return new Promise((resolve) => {
+        const existingMsg = document.getElementById("floatingMessage");
+        if (existingMsg) {
+            existingMsg.remove();
+        }
+
+        const msgDiv = document.createElement("div");
+        msgDiv.id = "floatingMessage";
+        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+        msgDiv.textContent = msgText;
+
+        document.body.prepend(msgDiv);
+
+        setTimeout(() => {
+            msgDiv.remove();
+            resolve();
+        }, 2000);
+    });
+}
+
 async function submitData() {
     console.log('inside submitData new company');
     let token = localStorage.getItem('token');
@@ -43,12 +64,13 @@ async function submitData() {
                     'Authorization': `${token}`
                 }
             });
-            console.log('response data = ' + JSON.stringify(response.data));
-            //this will give the data inside the array
+            console.log('response data = ', response.data);
             console.log('Full response:', response.data.newCompany);
+            await showMessage("Company Updated Successfully", 'success');
             window.location.href = './jobTrackerHome.html';
         }
         catch (error) {
+            await showMessage("Could Not Update Company", 'failure');
             console.log('error:', error);
             if (error.response) {
                 if (error.response.status == 401 || error.response.data == 403 || error.response.data == 404) {

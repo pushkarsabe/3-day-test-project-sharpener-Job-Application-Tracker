@@ -2,6 +2,7 @@ console.log('jobTrackerHome loaded');
 const HOST = 'localhost';
 let allJobs = [];
 let allCompanies = [];
+let myChartInstance = null;
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
@@ -19,56 +20,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         allJobs = response1.data.allJobData;
         displayJobs(allJobs);
         // console.log('allJobs = ', allJobs);
-
-        let allStatusCount = allJobs.length, interviewCount = 0, rejectedcount = 0, offerCount = 0, acceptedCount = 0, appliedCount = 0;
-        // console.log('allStatusCount ', allStatusCount, ' interviewCount ', interviewCount, ' rejectedcount ', rejectedcount, ' offerCount ', offerCount, ' acceptedCount ', acceptedCount, ' appliedCount ', appliedCount);
-
-        allJobs.forEach(jobs => {
-            if (jobs.status.toLowerCase() === 'interview') {
-                interviewCount++;
-            }
-            else if (jobs.status.toLowerCase() === 'rejected') {
-                rejectedcount++;
-            }
-            else if (jobs.status.toLowerCase() === 'offer') {
-                offerCount++;
-            }
-            else if (jobs.status.toLowerCase() === 'accepted') {
-                acceptedCount++;
-            }
-            else if (jobs.status.toLowerCase() === 'applied') {
-                appliedCount++;
-            }
-        })
-        console.log('allStatusCount ', allStatusCount, ' interviewCount ', interviewCount, ' rejectedcount ', rejectedcount, ' offerCount ', offerCount, ' acceptedCount ', acceptedCount, ' appliedCount ', appliedCount);
-
-        //dispay the bar chart
-        const ctx = document.getElementById('myChart');
-        if (ctx) {
-            new Chart(ctx, {
-                type: 'bar',
-                data: {
-                    labels: ['All Statuses', 'Interview', 'Rejected', 'Offer', 'Accepted', 'Applied'],
-                    datasets: [{
-                        label: 'jobs and status',
-                        data: [allStatusCount, interviewCount, rejectedcount, offerCount, acceptedCount, appliedCount],
-                        backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'],
-                        borderColor: ['rgba(0, 0, 0, 0.8)'],
-                        borderWidth: 1
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    scales: {
-                        y: {
-                            beginAtZero: true
-                        }
-                    }
-                }
-            });
-        } else {
-            console.error("Chart element not found!");
-        }
+        displayChart();
 
         const response2 = await axios.get(`http://${HOST}:5000/company/data`, {
             headers: {
@@ -82,6 +34,131 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching jobs:", error);
     }
 });
+
+function displayChart() {
+    const ctx = document.getElementById('myChart');
+
+    // If chart already exists, update the dataset
+    if (myChartInstance) {
+        myChartInstance.data.datasets[0].data = calculateChartData();
+        myChartInstance.update(); // Refresh the chart
+    } else {
+        myChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['All Statuses', 'Interview', 'Rejected', 'Offer', 'Accepted', 'Applied'],
+                datasets: [{
+                    label: 'Jobs and Status',
+                    data: calculateChartData(), // Get updated values
+                    backgroundColor: ['red', 'blue', 'yellow', 'green', 'purple', 'orange'],
+                    borderColor: ['rgba(0, 0, 0, 0.8)'],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+    }
+}
+
+function calculateChartData() {
+    let allStatusCount = allJobs.length,
+        interviewCount = 0, rejectedcount = 0, offerCount = 0,
+        acceptedCount = 0, appliedCount = 0;
+
+    allJobs.forEach(job => {
+        switch (job.status.trim().toLowerCase()) {
+            case 'interview': interviewCount++; break;
+            case 'rejected': rejectedcount++; break;
+            case 'offer': offerCount++; break;
+            case 'accepted': acceptedCount++; break;
+            case 'applied': appliedCount++; break;
+        }
+    });
+    console.log('allStatusCount', allStatusCount, 'interviewCount', interviewCount, 'rejectedcount', rejectedcount, 'offerCount', offerCount, 'acceptedCount', acceptedCount, 'appliedCount', appliedCount);
+    return [allStatusCount, interviewCount, rejectedcount, offerCount, acceptedCount, appliedCount];
+}
+
+
+
+
+function openProfilePopup() {
+    document.getElementById('profilePopup').style.display = 'block';
+    loadUserData();
+}
+function closeProfilePopup() {
+    document.getElementById('profilePopup').style.display = 'none';
+}
+async function loadUserData() {
+    const token = localStorage.getItem("token");
+    if (!token) {
+        console.error("No token found! User might not be logged in.");
+        return;
+    }
+
+    try {
+        let response = await axios.get(`http://${HOST}:5000/user/singleData`, {
+            headers: { 'Authorization': `${token}` }
+        });
+
+        let user = response.data.singleUserData;
+        console.log("Fetched user data:", user);
+        document.getElementById("firstName").value = user.firstName || "";
+        document.getElementById("lastName").value = user.lastName || "";
+        document.getElementById("inputEmail").value = user.email || "";
+    } catch (err) {
+        console.log('Error fetching user data:', err);
+    }
+}
+function showMessage(msgText, status) {
+    return new Promise((resolve) => {
+        const existingMsg = document.getElementById("floatingMessage");
+        if (existingMsg) {
+            existingMsg.remove();
+        }
+
+        const msgDiv = document.createElement("div");
+        msgDiv.id = "floatingMessage";
+        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+        msgDiv.textContent = msgText;
+
+        document.body.prepend(msgDiv);
+
+        setTimeout(() => {
+            msgDiv.remove();
+            resolve();
+        }, 2000);
+    });
+}
+document.getElementById('editUserForm').addEventListener('submit', async function (event) {
+    event.preventDefault();
+    console.log('Updating user profile...');
+
+    const token = localStorage.getItem("token");
+    const updatedUserData = {
+        firstName: document.getElementById("firstName").value.trim(),
+        lastName: document.getElementById("lastName").value.trim(),
+        email: document.getElementById("inputEmail").value.trim()
+    };
+
+    try {
+        const response = await axios.put(`http://${HOST}:5000/user/update`, updatedUserData, {
+            headers: { 'Authorization': `${token}` }
+        });
+
+        console.log("User updated successfully:", response.data);
+        closeProfilePopup();
+        await showMessage('Profile updated successfully', "success");
+    } catch (error) {
+        console.error("Error updating user:", error);
+        await showMessage('Could Not Update Profile', "failure");
+    }
+});
+
 
 function displayJobs(jobs) {
     console.log('displayJobs jobs', jobs);
@@ -110,7 +187,6 @@ function displayJobs(jobs) {
     });
 }
 
-
 async function deleteJob(jobId) {
     console.log(`deleteJob job with ID: ${jobId}`);
     const token = localStorage.getItem("token");
@@ -131,12 +207,23 @@ async function deleteJob(jobId) {
             }
         });
         console.log("Job deleted successfully:", response);
+        await showMessage('Job Deleted successfully', "success");
+
+        const updatedJobResponse = await axios.get(`http://${HOST}:5000/jobTracker/data`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+
+        allJobs = updatedJobResponse.data.allJobData;
+        displayJobs(allJobs);
+        displayChart();
     }
     catch (err) {
         console.log(('err', err));
+        await showMessage('Can Not Delete Job', "failure");
     }
 }
-
 
 async function editJob(jobId) {
     console.log(`Editing job with ID: ${jobId}`);
@@ -196,9 +283,8 @@ async function saveJob(jobId) {
             }
         });
         console.log("Update response:", response.data);
-        alert("Job updated successfully!");
-
         closeEditJobModal();
+        showMessage("Job Updated Successfully", 'success');
 
         const updatedJobResponse = await axios.get(`http://${HOST}:5000/jobTracker/data`, {
             headers: {
@@ -208,12 +294,12 @@ async function saveJob(jobId) {
 
         allJobs = updatedJobResponse.data.allJobData;
         displayJobs(allJobs);
-
+        displayChart();
     }
     catch (err) {
+        showMessage("Could Not Update Job", 'failure');
         console.log(('err', err));
     }
-    document.getElementById("editJobContainer").innerHTML = "";
 }
 
 function cancelJobEdit() {
@@ -279,9 +365,9 @@ function displayCompany(companies) {
 
             row.innerHTML = `
                 <td>${company.name}</td>
+                <td>${company.location}</td>
                 <td>${company.companySize}</td>
                 <td>${company.companyType}</td>
-                <td>${company.location}</td>
                 <td><a href="${company.website}" target="_blank">${company.website}</a></td>
                 <td><a href="${company.linkedIn}" target="_blank">${company.linkedIn}</a></td>
                 <td>${company.yearFounded}</td>
@@ -371,8 +457,8 @@ async function saveCompany(companyId) {
             }
         });
         console.log("Company updated successfully:", response.data);
-        alert("Company updated successfully!");
         document.getElementById("editCompanyContainer").innerHTML = "";
+        showMessage("Company Updated Successfully", 'success');
 
         closeEditCompanyModal();
 
@@ -383,10 +469,9 @@ async function saveCompany(companyId) {
         });
         allCompanies = response2.data.allCompanyData;
         displayCompany(response2.data.allCompanyData);
-
-
     }
     catch (err) {
+        showMessage("Could Not Update Company", 'failure');
         console.error("Error updating company:", err);
     }
 }
@@ -414,8 +499,17 @@ async function deleteCompany(companyId) {
         });
 
         console.log("Company deleted successfully:", response);
-        alert("Company deleted successfully!");
+        showMessage("Company Deleted Successfully!", 'success');
+
+        const response2 = await axios.get(`http://${HOST}:5000/company/data`, {
+            headers: {
+                Authorization: `${token}`
+            }
+        });
+        allCompanies = response2.data.allCompanyData;
+        displayCompany(response2.data.allCompanyData);
     } catch (err) {
+        showMessage("Could Not Update Company", 'failure');
         console.error("Error deleting company:", err);
     }
 }

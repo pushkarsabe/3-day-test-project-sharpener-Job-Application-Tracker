@@ -18,7 +18,23 @@
 
     <div>
         <h2>User Profile</h2>
-        <button onclick="window.location='userProfile.html'">Edit Profile</button>
+        <button onclick="openProfilePopup()">Edit Profile</button>
+    </div>
+    <div id="profilePopup" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeProfilePopup()">&times;</span>
+            <h2>Manage User Profile</h2>
+            <form id="editUserForm">
+                <label>First Name :</label>
+                <input type="text" name="firstName" id="firstName"><br><br>
+                <label>Last Name :</label>
+                <input type="text" name="lastName" id="lastName"><br><br>
+                <label>Email :</label>
+                <input type="text" name="email" id="inputEmail"><br><br>
+                <button type="submit">Save Changes</button>
+                <button type="button" onclick="closeProfilePopup()">Cancel</button>
+            </form>
+        </div>
     </div>
     <br>
     <hr>
@@ -74,7 +90,7 @@
     <hr>
 
     <h2>Company</h2>
-    <input id="companySearchInput" type="text" placeholder="Enter Company Nmae,Location">
+    <input id="companySearchInput" type="text" placeholder="Enter Company Name,Location">
     <button onclick="window.location='company.html'">Add New Company</button>
     <br><br>
     <table border="1" id="companyTable">
@@ -102,9 +118,8 @@
     </div>
     <hr>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="jobTrackerHome.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.8/dist/chart.umd.min.js"></script>
 </body>
 
 </html>

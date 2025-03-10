@@ -7,6 +7,27 @@ document.getElementById('submitJobApplication').addEventListener('submit', funct
     submitData();
 });
 
+function showMessage(msgText, status) {
+    return new Promise((resolve) => {
+        const existingMsg = document.getElementById("floatingMessage");
+        if (existingMsg) {
+            existingMsg.remove();
+        }
+
+        const msgDiv = document.createElement("div");
+        msgDiv.id = "floatingMessage";
+        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+        msgDiv.textContent = msgText;
+
+        document.body.prepend(msgDiv);
+
+        setTimeout(() => {
+            msgDiv.remove();
+            resolve();
+        }, 2000);
+    });
+}
+
 async function submitData() {
     console.log('inside submitData newjob');
     let token = localStorage.getItem('token');
@@ -55,9 +76,11 @@ async function submitData() {
             });
             console.log('response data = ' + JSON.stringify(response.data));
             console.log('Full response:', response);
+            await showMessage('Job Added successfully', "success");
             window.location.href = './jobTrackerHome.html'
         }
         catch (error) {
+            await showMessage('Job Not Added', "failure");
             console.log('error:', error);
             if (error.response) {
                 if (error.response.status == 401 || error.response.data == 403 || error.response.data == 404) {
