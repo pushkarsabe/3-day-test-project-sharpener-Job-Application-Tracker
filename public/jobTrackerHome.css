@@ -1,40 +1,245 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1;
+    z-index: 1000;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.5);
+    overflow-y: auto;
 }
 
 .modal-content {
     background-color: white;
     padding: 20px;
-    margin: 10% auto;
-    width: 30%;
-    height: 30%;
+    margin: 5% auto;
+    width: 90%;
+    max-width: 500px;
     border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    position: relative;
 }
 
 .close {
-    float: right;
+    position: absolute;
+    right: 15px;
+    top: 10px;
     font-size: 24px;
+    font-weight: bold;
     cursor: pointer;
+    color: #555;
+    transition: color 0.2s;
+}
+
+.close:hover {
+    color: #000;
 }
 
 
+#displayChartDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 600px;
+    margin: 0 auto;
+    aspect-ratio: 1 / 1;
+    position: relative;
+}
+
+#displayChartDiv canvas {
+    width: 100% !important;
+    height: 100% !important;
+    max-height: 600px;
+}
 
 
+/* Form Styling */
+#editUserForm {
+    width: 100%;
+}
 
+#editUserForm label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
 
+#editUserForm input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 15px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
 
+#editUserForm button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
 
+#editUserForm button[type="submit"] {
+    background-color: #4CAF50;
+    color: white;
+}
 
+#editUserForm button[type="button"] {
+    background-color: #f44336;
+    color: white;
+}
 
+/* Edit Job Modal Specific Styles */
+#editJobContainer {
+    width: 100%;
+}
 
+#editJobContainer h3 {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
 
+#editJobContainer label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+#editJobContainer input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+#editJobContainer textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-height: 100px;
+    resize: vertical;
+    margin-top: 5px;
+}
+
+#editJobContainer button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#editJobContainer button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#editJobContainer button:last-of-type {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Additional Modal Content Styles for Edit Job */
+#editJobModal .modal-content {
+    max-width: 600px;
+}
+
+/* Edit Company Modal Specific Styles */
+#editCompanyContainer {
+    width: 100%;
+}
+
+#editCompanyContainer h3 {
+    margin-top: 5px;
+    margin-bottom: 20px;
+    font-size: 20px;
+    color: #333;
+}
+
+#editCompanyContainer label {
+    display: block;
+    margin-bottom: 15px;
+    font-weight: 500;
+}
+
+#editCompanyContainer input[type="text"],
+#editCompanyContainer input[type="number"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 5px;
+}
+
+#editCompanyContainer textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    min-height: 100px;
+    resize: vertical;
+    margin-top: 5px;
+}
+
+#editCompanyContainer button {
+    padding: 10px 15px;
+    margin-right: 10px;
+    margin-top: 10px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+#editCompanyContainer button:first-of-type {
+    background-color: #4CAF50;
+    color: white;
+}
+
+#editCompanyContainer button:last-of-type {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Additional Modal Content Styles for Edit Company */
+#editCompanyModal .modal-content {
+    max-width: 600px;
+    max-height: 80vh;
+    overflow-y: auto;
+}
+
+/* Scrollbar styling for overflow content */
+#editCompanyModal .modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+#editCompanyModal .modal-content::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 4px;
+}
+
+#editCompanyModal .modal-content::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 4px;
+}
+
+#editCompanyModal .modal-content::-webkit-scrollbar-thumb:hover {
+    background: #555;
+}
 
 
 /* displaying message css */

@@ -4,6 +4,27 @@ let allJobs = [];
 let allCompanies = [];
 let myChartInstance = null;
 
+function showMessage(msgText, status) {
+    return new Promise((resolve) => {
+        const existingMsg = document.getElementById("floatingMessage");
+        if (existingMsg) {
+            existingMsg.remove();
+        }
+
+        const msgDiv = document.createElement("div");
+        msgDiv.id = "floatingMessage";
+        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+        msgDiv.textContent = msgText;
+
+        document.body.prepend(msgDiv);
+
+        setTimeout(() => {
+            msgDiv.remove();
+            resolve();
+        }, 2000);
+    });
+}
+
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
     if (!token) {
@@ -34,26 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.error("Error fetching jobs:", error);
     }
 });
-function showMessage(msgText, status) {
-    return new Promise((resolve) => {
-        const existingMsg = document.getElementById("floatingMessage");
-        if (existingMsg) {
-            existingMsg.remove();
-        }
 
-        const msgDiv = document.createElement("div");
-        msgDiv.id = "floatingMessage";
-        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
-        msgDiv.textContent = msgText;
-
-        document.body.prepend(msgDiv);
-
-        setTimeout(() => {
-            msgDiv.remove();
-            resolve();
-        }, 2000);
-    });
-}
 function displayChart() {
     const ctx = document.getElementById('myChart');
 
@@ -63,7 +65,7 @@ function displayChart() {
         myChartInstance.update(); // Refresh the chart
     } else {
         myChartInstance = new Chart(ctx, {
-            type: 'bar',
+            type: 'pie',
             data: {
                 labels: ['All Statuses', 'Interview', 'Rejected', 'Offer', 'Accepted', 'Applied'],
                 datasets: [{
@@ -76,8 +78,10 @@ function displayChart() {
             },
             options: {
                 responsive: true,
-                scales: {
-                    y: { beginAtZero: true }
+                plugins: {
+                    legend: {
+                        position: 'top', 
+                    }
                 }
             }
         });
@@ -306,6 +310,37 @@ function cancelJobEdit() {
     document.getElementById("editJobContainer").innerHTML = "";
 }
 
+// Save filter parameters to URL and localStorage
+function saveFilterState() {
+    const searchInput = document.getElementById("searchInput").value;
+    const statusFilter = document.getElementById("statusFilter").value;
+    const startDate = document.getElementById("startDate").value;
+    const endDate = document.getElementById("endDate").value;
+
+    // Save to localStorage
+    localStorage.setItem("jobSearch", searchInput);
+    localStorage.setItem("jobStatus", statusFilter);
+    localStorage.setItem("jobStartDate", startDate);
+    localStorage.setItem("jobEndDate", endDate);
+
+    // Update URL parameters
+    const url = new URL(window.location);
+    if (searchInput) url.searchParams.set('search', searchInput);
+    else url.searchParams.delete('search');
+
+    if (statusFilter) url.searchParams.set('status', statusFilter);
+    else url.searchParams.delete('status');
+
+    if (startDate) url.searchParams.set('startDate', startDate);
+    else url.searchParams.delete('startDate');
+
+    if (endDate) url.searchParams.set('endDate', endDate);
+    else url.searchParams.delete('endDate');
+
+    // Update URL without page reload
+    window.history.pushState({}, '', url);
+}
+
 async function filterJobs() {
     const searchInput = document.getElementById("searchInput").value.toLowerCase();
     const statusFilter = document.getElementById("statusFilter").value.toLowerCase();
@@ -333,16 +368,56 @@ async function filterJobs() {
         });
         console.log('response =', response.data.filteredJobs);
         displayJobs(response.data.filteredJobs);
+
+        // Save the filter state
+        saveFilterState();
+        // Save the data for restoration after page refresh
+        localStorage.setItem("jobData", JSON.stringify(response.data.filteredJobs));
     }
     catch (error) {
         console.error("Error fetching jobs:", error);
     }
 }
 
-document.getElementById("searchInput").addEventListener("input", filterJobs);
-document.getElementById("statusFilter").addEventListener("change", filterJobs);
-document.getElementById("startDate").addEventListener("change", filterJobs);
-document.getElementById("endDate").addEventListener("change", filterJobs);
+function loadFilterState() {
+    // Try to get values from URL parameters first
+    const urlParams = new URLSearchParams(window.location.search);
+    const searchFromUrl = urlParams.get('search');
+    const statusFromUrl = urlParams.get('status');
+    const startDateFromUrl = urlParams.get('startDate');
+    const endDateFromUrl = urlParams.get('endDate');
+
+    // Fall back to localStorage if URL parameters are not present
+    const searchInput = searchFromUrl || localStorage.getItem("jobSearch") || "";
+    const statusFilter = statusFromUrl || localStorage.getItem("jobStatus") || "";
+    const startDate = startDateFromUrl || localStorage.getItem("jobStartDate") || "";
+    const endDate = endDateFromUrl || localStorage.getItem("jobEndDate") || "";
+
+    // Set the form values
+    document.getElementById("searchInput").value = searchInput;
+    document.getElementById("statusFilter").value = statusFilter;
+    document.getElementById("startDate").value = startDate;
+    document.getElementById("endDate").value = endDate;
+
+    // Try to load saved job data
+    const savedJobData = localStorage.getItem("jobData");
+    if (savedJobData) {
+        displayJobs(JSON.parse(savedJobData));
+    }
+
+    // If there are filter values, trigger a new search to get fresh data
+    if (searchInput || statusFilter || startDate || endDate) {
+        filterJobs();
+    }
+}
+
+// Set up event listeners
+function setupEventListeners() {
+    document.getElementById("searchInput").addEventListener("input", filterJobs);
+    document.getElementById("statusFilter").addEventListener("change", filterJobs);
+    document.getElementById("startDate").addEventListener("change", filterJobs);
+    document.getElementById("endDate").addEventListener("change", filterJobs);
+}
 
 function clearFilters() {
     document.getElementById("searchInput").value = "";
@@ -352,7 +427,11 @@ function clearFilters() {
     displayJobs(allJobs);
 }
 
-
+// Initialize everything when the DOM is loaded
+document.addEventListener("DOMContentLoaded", function () {
+    setupEventListeners();
+    loadFilterState();
+});
 
 function displayCompany(companies) {
     console.log('displayCompany companies', companies);
@@ -475,6 +554,7 @@ async function saveCompany(companyId) {
         console.error("Error updating company:", err);
     }
 }
+
 async function deleteCompany(companyId) {
     console.log(`Deleting company with ID: ${companyId}`);
     const token = localStorage.getItem("token");

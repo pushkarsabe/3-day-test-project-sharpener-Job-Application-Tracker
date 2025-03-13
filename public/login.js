@@ -65,16 +65,23 @@ async function submitData() {
         }
         catch (error) {
             if (error.response) {
-                if (error.response.status == 401 || error.response.data == 403 || error.response.data == 404) {
-                    console.log('Error object:', error.response.data.message);
-                    await showMessage(error.response.data.message, 'failureMessage');
+                // Server responded with a status outside 2xx
+                const status = error.response.status;
+                const errorMessage = error.response.data.message || 'An error occurred';
+
+                if (status === 401) {
+                    await showMessage('Incorrect password. Please try again.', 'failureMessage');
+                } else if (status === 403) {
+                    await showMessage('Access denied. Something went wrong.', 'failureMessage');
+                } else if (status === 404) {
+                    await showMessage('User not found. Please register first.', 'failureMessage');
                 } else {
-                    console.log('Unhandled error:', error);
-                    await showMessage(error.response.data.message, 'failureMessage');
+                    await showMessage(errorMessage, 'failureMessage');
                 }
+            } else {
+                // Network error or server didn't respond
+                await showMessage('Network error. Please try again later.', 'failureMessage');
             }
-            else
-                await showMessage('No response from server', 'failureMessage');
         }
     }
 

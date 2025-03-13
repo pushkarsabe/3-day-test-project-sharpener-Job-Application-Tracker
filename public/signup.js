@@ -68,6 +68,7 @@ async function submitData() {
                 await showMessage(error.response.data.error || 'Signup failed', 'failureMessage');
             } else if (error.request) {
                 console.log('No response received from server', error.request);
+                await showMessage('No response received from server', 'failureMessage');
             } else {
                 console.log('Unexpected Error:', error.message);
             }
