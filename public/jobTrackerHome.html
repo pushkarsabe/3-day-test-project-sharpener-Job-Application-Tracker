@@ -8,6 +8,8 @@
     <link rel="shortcut icon" href="#">
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="jobTrackerHome.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
 </head>
 
 <body>
@@ -15,10 +17,24 @@
         <h2>Job Tracker Home Page</h2>
     </header>
 
-    <div id="userProfileDiv">
-        <h2>User Profile</h2>
-        <button id="openPopupButton" onclick="openProfilePopup()">Edit User Profile</button>
+    <div class="user-profile-container">
+        <div id="userProfileDiv">
+
+            <div class="user-icon">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="1.8"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path
+                        d="M20 21v-2a4 4 0 0 0-3-3.87M4 21v-2a4 4 0 0 1 3-3.87m10-5.13a4 4 0 1 0-8 0 4 4 0 0 0 8 0z" />
+                </svg>
+            </div>
+
+            <button id="openPopupButton" onclick="openProfilePopup()">Edit User Profile</button>
+            <div class="user-badge" id="userBadge">
+                <span id="usernameDisplay">Loading...</span>
+            </div>
+        </div>
     </div>
+
 
     <div id="profilePopup" class="modal">
         <div class="modal-content">
@@ -94,7 +110,7 @@
         <h2>Company</h2>
         <input id="companySearchInput" type="text" placeholder="Enter Company Name,Location">
         <button id="moveToCompanyFormButton" onclick="window.location='company.html'">Add New Company</button>
-        
+
         <table border="1" id="companyTable">
             <thead>
                 <tr>
@@ -119,6 +135,29 @@
             </div>
         </div>
     </div>
+
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-logo">
+                <h2>MySite</h2>
+                <p>&copy; 2025 All rights reserved.</p>
+            </div>
+
+            <div class="footer-links">
+                <a href="/jobTrackerHome.html">Home</a>
+                <a href="#">About</a>
+                <a href="#">Contact</a>
+                <a href="/login.html">Login</a>
+            </div>
+
+            <div class="footer-socials">
+                <a href="#"><i class="fab fa-facebook-f"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-instagram"></i></a>
+            </div>
+        </div>
+    </footer>
 
 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>

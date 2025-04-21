@@ -5,30 +5,34 @@ let allCompanies = [];
 let myChartInstance = null;
 
 function showMessage(msgText, status) {
-    return new Promise((resolve) => {
-        const existingMsg = document.getElementById("floatingMessage");
-        if (existingMsg) {
-            existingMsg.remove();
-        }
+    const existingMsg = document.getElementById("floatingMessage");
+    if (existingMsg) {
+        existingMsg.remove();
+    }
+    const msgDiv = document.createElement("div");
+    msgDiv.id = "floatingMessage";
+    msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
+    msgDiv.textContent = msgText;
 
-        const msgDiv = document.createElement("div");
-        msgDiv.id = "floatingMessage";
-        msgDiv.classList.add("message-box", status === "success" ? "success" : "failure");
-        msgDiv.textContent = msgText;
+    document.body.prepend(msgDiv);
 
-        document.body.prepend(msgDiv);
+    setTimeout(() => {
+        msgDiv.remove();
 
-        setTimeout(() => {
-            msgDiv.remove();
-            resolve();
-        }, 2000);
-    });
+    }, 2000);
+
 }
 
 document.addEventListener("DOMContentLoaded", async () => {
     const token = localStorage.getItem("token");
+    console.log('DOMContentLoaded token = ', token);
+
     if (!token) {
+        showMessage('No token found! User might not be logged in.', 'failure');
         console.error("No token found! User might not be logged in.");
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 3000);
         return;
     }
 
@@ -51,10 +55,21 @@ document.addEventListener("DOMContentLoaded", async () => {
         allCompanies = response2.data.allCompanyData;
         displayCompany(response2.data.allCompanyData);
 
+        let response3 = await axios.get(`http://${HOST}:5000/user/singleData`, {
+            headers: { 'Authorization': `${token}` }
+        });
+
+        let user = response3.data.singleUserData;
+        console.log("response3 user data:", user);
+        let userNameSpan = document.getElementById('usernameDisplay');
+        userNameSpan.innerText = user.firstName + " " + user.lastName;
+
     } catch (error) {
         console.error("Error fetching jobs:", error);
     }
 });
+
+
 
 function displayChart() {
     const ctx = document.getElementById('myChart');
@@ -80,7 +95,7 @@ function displayChart() {
                 responsive: true,
                 plugins: {
                     legend: {
-                        position: 'top', 
+                        position: 'top',
                     }
                 }
             }
@@ -156,10 +171,20 @@ document.getElementById('editUserForm').addEventListener('submit', async functio
 
         console.log("User updated successfully:", response.data);
         closeProfilePopup();
-        await showMessage('Profile updated successfully', "success");
+        showMessage('Profile updated successfully', "success");
+
+        let response3 = await axios.get(`http://${HOST}:5000/user/singleData`, {
+            headers: { 'Authorization': `${token}` }
+        });
+
+        let user = response3.data.singleUserData;
+        console.log("response3 user data:", user);
+        let userNameSpan = document.getElementById('usernameDisplay');
+        userNameSpan.innerText = user.firstName + " " + user.lastName;
+
     } catch (error) {
         console.error("Error updating user:", error);
-        await showMessage('Could Not Update Profile', "failure");
+        showMessage('Could Not Update Profile', "failure");
     }
 });
 
@@ -202,6 +227,7 @@ async function deleteJob(jobId) {
     const isConfirmed = confirm("Are you sure you want to delete this job?");
     if (!isConfirmed) {
         console.log("Job deletion canceled.");
+        showMessage("Job deletion was canceled by the user.", "failure");
         return;
     }
     try {
@@ -211,7 +237,7 @@ async function deleteJob(jobId) {
             }
         });
         console.log("Job deleted successfully:", response);
-        await showMessage('Job Deleted successfully', "success");
+        showMessage('Job Deleted successfully', "success");
 
         const updatedJobResponse = await axios.get(`http://${HOST}:5000/jobTracker/data`, {
             headers: {
@@ -225,7 +251,7 @@ async function deleteJob(jobId) {
     }
     catch (err) {
         console.log(('err', err));
-        await showMessage('Can Not Delete Job', "failure");
+        showMessage('Can Not Delete Job', "failure");
     }
 }
 
@@ -560,14 +586,21 @@ async function deleteCompany(companyId) {
     const token = localStorage.getItem("token");
 
     if (!token) {
-        console.error("No token found! User might not be logged in.");
-        return;
+        if (!token) {
+            showMessage('No token found! User might not be logged in.', 'failure');
+            console.error("No token found! User might not be logged in.");
+            setTimeout(() => {
+                window.location.href = '/login.html';
+            }, 3000);
+            return;
+        }
     }
 
     // Confirm before deleting
     const isConfirmed = confirm("Are you sure you want to delete this company?");
     if (!isConfirmed) {
         console.log("Company deletion canceled.");
+        showMessage("Company deletion was canceled by the user.", "failure");
         return;
     }
 

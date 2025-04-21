@@ -27,6 +27,20 @@ function showMessage(msgText, status) {
         }, 2000);
     });
 }
+document.addEventListener('DOMContentLoaded', async() => {
+    console.log('inside DOMContentLoaded newjob');
+    let token = localStorage.getItem('token');
+    console.log(token);
+
+    if (!token) {
+        await showMessage('No token found! User might not be logged in.', 'failure');
+        console.error("No token found! User might not be logged in.");
+        setTimeout(() => {
+            window.location.href = '/login.html';
+        }, 3000);
+        return;
+    }
+})
 
 async function submitData() {
     console.log('inside submitData new company');

@@ -278,22 +278,32 @@ header {
 }
 
 /* User Profile Div Styling */
-#userProfileDiv {
-    background-color: #f8f9fa;
-    width: 100%;
+.user-profile-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     padding: 20px;
+}
+
+
+#userProfileDiv {
+    background: linear-gradient(135deg, #f8f9fa, #e6fff4);
+    width: 100%;
+    max-width: 600px;
+    padding: 20px 30px;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    align-items: flex-start;
-    border-radius: 8px;
-    height: 120px;
+    gap: 16px;
     position: relative;
+    animation: fadeInUp 0.6s ease;
 }
 
 #userProfileDiv h2 {
-    margin: 18px;
-    align-self: flex-start;
+    margin: 0;
+    font-size: 1.6rem;
+    color: #333;
 }
 
 #openPopupButton {
@@ -314,6 +324,85 @@ header {
 #openPopupButton:hover {
     background-color: #00e67e;
 }
+
+
+.user-badge {
+    background-color: #222;
+    color: white;
+    padding: 10px 18px;
+    border-radius: 40px;
+    font-weight: 600;
+    box-shadow: 0 5px 12px rgba(0, 0, 0, 0.2);
+    animation: slideInRight 0.8s ease;
+    min-width: 140px;
+    text-align: center;
+    align-self: flex-end;
+}
+
+#usernameDisplay {
+    margin: 0;
+    font-size: 1rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(25px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(40px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+@media (max-width: 600px) {
+    #userProfileDiv {
+        padding: 20px;
+    }
+
+    .user-badge {
+        align-self: flex-start;
+    }
+}
+
+.user-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #e3f9f0;
+    border-radius: 50%;
+    width: 70px;
+    height: 70px;
+    animation: popIn 0.6s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+@keyframes popIn {
+    0% {
+        transform: scale(0.6);
+        opacity: 0;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+
 
 /* Job Tracker Div Styling */
 #jobTrackerDiv {
@@ -558,4 +647,74 @@ label[for="endDate"] {
 #companyTable tbody tr:hover {
     background-color: #f0f0f0;
     transition: background-color 0.2s ease;
+}
+
+
+
+.footer {
+    background: #1e1e2f;
+    color: #fff;
+    padding: 40px 20px;
+    animation: fadeInUp 1s ease-in-out;
+}
+
+.footer-container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+}
+
+.footer-logo h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+}
+
+.footer-links,
+.footer-socials {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.footer-links a,
+.footer-socials a {
+    color: #bbb;
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+.footer-links a:hover,
+.footer-socials a:hover {
+    color: #fff;
+    transform: translateY(-3px);
+}
+
+.footer-socials a i {
+    font-size: 18px;
+}
+
+/* Animation */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .footer-container {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
 }
